@@ -1,10 +1,7 @@
 package org.example.pap.models;
 
 import jakarta.persistence.*;
-import org.jeasy.rules.mvel.MVELRule;
-import org.jeasy.rules.api.Rules;
-import org.jeasy.rules.api.Facts;
-import org.jeasy.rules.core.DefaultRulesEngine;
+
 
 @Entity
 public class AccessRule {
@@ -22,7 +19,7 @@ public class AccessRule {
 
     private String target;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)  // 加入這行來啟用級聯刪除
     @JoinColumn(name = "criteria_id")
     private MatchingCriteria criteria;
 
@@ -42,14 +39,26 @@ public class AccessRule {
         return id;
     }
 
-    public static void main(String argc[]){
-        AccessRule accessRule = new AccessRule();
-        accessRule.setTarget("user.age>18 and user.gender=='M'");
-        System.out.println(accessRule.getTarget());
-        MVELRule weatherRule = new MVELRule()
-                .name("weather rule")
-                .description("if it rains then take an umbrella")
-                .when("rain == true")
-                .then("System.out.println(\"It rains, take an umbrella!\");");
+    public String getDecision() {
+        return decision;
     }
+
+    public void setDecision(String decision) {
+        this.decision = decision;
+    }
+
+    private String decision;
+
+    public String getFilterName() {
+        if(filterName==null || filterName.trim().length()==0)
+            filterName = "default";
+        return filterName;
+    }
+
+    public void setFilterName(String filterName) {
+        this.filterName = filterName;
+    }
+
+    private String filterName;
+
 }

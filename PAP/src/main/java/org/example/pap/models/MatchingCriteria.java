@@ -3,16 +3,15 @@ package org.example.pap.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.example.models.MatchingType;
+
+import java.util.HashMap;
 import java.util.List;
 
 @Entity
 public class MatchingCriteria {
 
-    public enum MatchingType {
-        ANY_OF,
-        ALL_OF,
-        LEAF_NODE
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,7 +26,7 @@ public class MatchingCriteria {
         this.notLogic = notLogic;
     }
 
-    boolean notLogic = false;
+    private boolean notLogic = false;
 
     private String matchOperator;
 
@@ -38,7 +37,7 @@ public class MatchingCriteria {
     @Enumerated(EnumType.STRING)
     private MatchingType matchingType;
 
-    @OneToMany(mappedBy = "parentCriteria", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parentCriteria", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<MatchingCriteria> subCriteria;
 
@@ -97,6 +96,14 @@ public class MatchingCriteria {
 
     public void setSubCriteria(List<MatchingCriteria> subCriteria) {
         this.subCriteria = subCriteria;
+        for (MatchingCriteria criteria : subCriteria) {
+            criteria.setParentCriteria(this); // 設置子對象的 parentCriteria
+        }
+    }
+
+    public void addSubCriteria(MatchingCriteria subCriterion) {
+        this.subCriteria.add(subCriterion);
+        subCriterion.setParentCriteria(this); // 設置子對象的 parentCriteria
     }
 
     public MatchingCriteria getParentCriteria() {
@@ -107,53 +114,30 @@ public class MatchingCriteria {
         this.parentCriteria = parentCriteria;
     }
 
-    public static String[] splitString(String input) {
-        if (input == null || input.isEmpty()) {
-            return new String[] { null, null };
+    public String toString() {
+        if(matchingType == MatchingType.LEAF_NODE) {
+            return "(" +attributeDesignator + " " + matchOperator + " " + attributeValue+")";
+        } else {
+            return "(" + subCriteria.get(0) + " " + (matchingType == MatchingType.ANY_OF ? "||" : "&&") + " " + subCriteria.get(1) + ")";
         }
-
-        String[] result = input.split("\\.", 2);
-        if (result.length == 1) {
-            return new String[] { result[0], null };
-        }
-        return result;
     }
 
-    public static MatchingCriteria fromString(String input) {
-        if (input == null || input.isEmpty()) {
-            throw new IllegalArgumentException("Input string cannot be null or empty");
-        }
-
-        // 支援的比較運算子
-        String[] operators = { ">", "<", ">=", "<=", "==", "!=" };
-
-        String selectedOperator = null;
-        for (String operator : operators) {
-            if (input.contains(operator)) {
-                selectedOperator = operator;
-                break;
+    public void processMatchingCriteria(HashMap<String, MatchingData> map) throws Exception{
+        if (matchingType == MatchingType.LEAF_NODE) {
+            // 解析 LEAF_NODE 類型的 attributeDesignator 和 attributeValue
+            if (attributeDesignator != null && !attributeDesignator.trim().isEmpty()) {
+                MatchingData.fromString(attributeDesignator, map);
+            }
+            if (attributeValue != null && !attributeValue.trim().isEmpty()) {
+                MatchingData.fromString(attributeValue, map);
+            }
+        } else if (matchingType == MatchingType.ALL_OF || matchingType == MatchingType.ANY_OF) {
+            // 遞迴處理 subCriteria
+            if (subCriteria != null && !subCriteria.isEmpty()) {
+                for (MatchingCriteria criteria : subCriteria) {
+                    criteria.processMatchingCriteria(map);
+                }
             }
         }
-
-        if (selectedOperator == null) {
-            throw new IllegalArgumentException("Input string must contain a valid comparison operator");
-        }
-
-        // 依據運算子分割字串
-        String[] parts = input.split(selectedOperator, 2);
-        if (parts.length != 2) {
-            throw new IllegalArgumentException("Input string must contain two parts separated by the operator");
-        }
-
-        String attributeDesignator = parts[0].trim();
-        String attributeValue = parts[1].trim();
-
-        MatchingCriteria criteria = new MatchingCriteria();
-        criteria.setAttributeDesignator(attributeDesignator);
-        criteria.setMatchOperator(selectedOperator);
-        criteria.setAttributeValue(attributeValue);
-        criteria.setMatchingType(MatchingType.LEAF_NODE);
-
-        return criteria;
     }
 }

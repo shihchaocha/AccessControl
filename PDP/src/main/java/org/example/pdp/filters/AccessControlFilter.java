@@ -9,4 +9,5 @@ public interface AccessControlFilter {
 
     public ArrayList AttributeUsed();
 
+    public boolean init() throws Exception;
 }

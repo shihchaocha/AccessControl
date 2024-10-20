@@ -13,4 +13,9 @@ public class DefaultAccessControlFilter implements AccessControlFilter {
     public ArrayList AttributeUsed() {
         return null;
     }
+
+    @Override
+    public boolean init() throws Exception {
+        return false;
+    }
 }

@@ -1,20 +1,22 @@
 package org.example.pap.models;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.HashMap;
 
 public class TestMatchingCriteria {
     public static void main(String[] args) {
         // 創建 MatchingCriteria 對象
-        MatchingCriteria criteria =
-                MatchingCriteriaParser.fromComplexString("(user.id == '123' and (user.age >= 30 or E < F))");
-
-        // 將對象轉換為 JSON 字符串
-        ObjectMapper objectMapper = new ObjectMapper();
+        String expression = "(user.id == '123' && (user.age >= 18 || (user.risk_5 < 5)) || (device.registered == 'true'))";
+        MatchingCriteria criteria = MatchingCriteriaParser.parse(expression);
+        HashMap<String, MatchingData> map = new HashMap<>();
         try {
-            String jsonString = objectMapper.writeValueAsString(criteria);
-            System.out.println("JSON Output: " + jsonString);
-        } catch (JsonProcessingException e) {
+            System.out.println(criteria.toString());
+            MatchingCriteria criteria2 = MatchingCriteriaParser.parse(criteria.toString());
+            System.out.println(criteria2.toString());
+
+            criteria.processMatchingCriteria(map);
+            MatchingData.dump(map);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

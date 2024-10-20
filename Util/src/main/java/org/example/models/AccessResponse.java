@@ -1,4 +1,4 @@
-package org.example.pdp.models;
+package org.example.models;
 
 public class AccessResponse {
     public AccessResponse(String requestID, int result, String message) {

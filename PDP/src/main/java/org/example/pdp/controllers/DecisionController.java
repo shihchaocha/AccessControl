@@ -1,10 +1,8 @@
 package org.example.pdp.controllers;
 
 import org.example.pdp.filters.DefaultAccessControlFilter;
-import org.example.pdp.models.AccessRequest;
-import org.example.pdp.models.AccessResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.example.models.AccessRequest;
+import org.example.models.AccessResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

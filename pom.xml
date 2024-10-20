@@ -47,5 +47,6 @@
         <module>PDP</module>
         <module>PIP</module>
         <module>PAP</module>
+        <module>Util</module>
     </modules>
 </project>
