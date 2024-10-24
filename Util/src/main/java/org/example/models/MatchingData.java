@@ -1,4 +1,4 @@
-package org.example.pap.models;
+package org.example.models;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -4,7 +4,10 @@ public class AccessRuleDTO {
     private Long id;
     private String target;
     private MatchingCriteriaDTO criteria;
-    private String decision;
+    private int decision;
+
+    public static int ALLOW = 1;
+    public static int DENY = 2;
 
     // Getters and Setters
     public Long getId() {
@@ -31,11 +34,11 @@ public class AccessRuleDTO {
         this.criteria = criteria;
     }
 
-    public String getDecision() {
+    public int getDecision() {
         return decision;
     }
 
-    public void setDecision(String decision) {
+    public void setDecision(int decision) {
         this.decision = decision;
     }
 

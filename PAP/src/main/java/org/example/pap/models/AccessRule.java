@@ -39,15 +39,15 @@ public class AccessRule {
         return id;
     }
 
-    public String getDecision() {
+    public int getDecision() {
         return decision;
     }
 
-    public void setDecision(String decision) {
+    public void setDecision(int decision) {
         this.decision = decision;
     }
 
-    private String decision;
+    private int decision;
 
     public String getFilterName() {
         if(filterName==null || filterName.trim().length()==0)

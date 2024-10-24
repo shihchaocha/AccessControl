@@ -1,23 +1,35 @@
-package org.example.pip.models;
+package org.example.models;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.HashMap;
 
-@Entity
-public class UserProfile {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class UserProfileDTO {
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String username;
-
-    @Column(nullable = false, unique = true)
     private String email;
-
-    @Column(nullable = true)
     private LocalDate dateOfBirth;
+    private String gender;
+
+    private HashMap<String, String> properties = new HashMap<String, String>();
+
+    private static HashMap<String, Integer> signatures = new HashMap<String, Integer>() {{
+        put("securityLevel", 1);
+        put("age", 1);
+        put("role", 1);
+        put("id", 1);
+        put("username", 1);
+        put("email", 1);
+        put("risk", 2);
+    }};
+
+    public void setProperty(String key, String value) {
+        this.properties.put(key, value);
+    }
+
+    public void getProperty(String key) {
+        this.properties.get(key);
+    }
 
     public int getSecurityLevel() {
         return securityLevel;
@@ -27,8 +39,15 @@ public class UserProfile {
         this.securityLevel = securityLevel;
     }
 
-    @Column(nullable = true)
     private int securityLevel;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     public String getRole() {
         return role;
@@ -38,23 +57,21 @@ public class UserProfile {
         this.role = role;
     }
 
-    @Column(nullable = true)
+    private int age;
     private String role;
 
-    @Column(nullable = true)
-    private String gender;
-
-
     // Constructors
-    public UserProfile() {
+    public UserProfileDTO() {
     }
 
-    public UserProfile(String username, String email, LocalDate dateOfBirth, String address, String profilePictureUrl, String bio, String gender, String role, int securityLevel) {
+    public UserProfileDTO(Long id, String username, String email, LocalDate dateOfBirth, String gender, String role, int securityLevel) {
+        this.id = id;
         this.username = username;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.role = role;
+        this.age = calculateAge();
         this.securityLevel = securityLevel;
     }
 
@@ -89,6 +106,7 @@ public class UserProfile {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+        this.age = calculateAge();
     }
 
     public String getGender() {
@@ -97,5 +115,13 @@ public class UserProfile {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public int calculateAge() {
+        if (this.dateOfBirth != null) {
+            return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
+        } else {
+            return 0;  // Return 0 if dateOfBirth is not set
+        }
     }
 }

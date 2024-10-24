@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.example.models.MatchingType;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class MatchingCriteriaDTO {
@@ -79,5 +80,24 @@ public class MatchingCriteriaDTO {
 
     public void setMatchingType(MatchingType matchingType) {
         this.matchingType = matchingType;
+    }
+
+    public void processMatchingCriteria(HashMap<String, MatchingData> map) throws Exception{
+        if (matchingType == MatchingType.LEAF_NODE) {
+            // 解析 LEAF_NODE 類型的 attributeDesignator 和 attributeValue
+            if (attributeDesignator != null && !attributeDesignator.trim().isEmpty()) {
+                MatchingData.fromString(attributeDesignator, map);
+            }
+            if (attributeValue != null && !attributeValue.trim().isEmpty()) {
+                MatchingData.fromString(attributeValue, map);
+            }
+        } else if (matchingType == MatchingType.ALL_OF || matchingType == MatchingType.ANY_OF) {
+            // 遞迴處理 subCriteria
+            if (subCriteria != null && !subCriteria.isEmpty()) {
+                for (MatchingCriteriaDTO criteria : subCriteria) {
+                    criteria.processMatchingCriteria(map);
+                }
+            }
+        }
     }
 }

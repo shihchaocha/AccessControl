@@ -5,14 +5,6 @@ import java.util.HashMap;
 public class AccessRequest {
 
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
     public String getOperation() {
         return operation;
     }
@@ -29,6 +21,7 @@ public class AccessRequest {
         this.contextInfo = contextInfo;
     }
 
+
     public String getRequestID() {
         return requestID;
     }
@@ -37,18 +30,29 @@ public class AccessRequest {
         this.requestID = requestID;
     }
 
+    public String getSubjectID() {
+        return subjectID;
+    }
+
+    public void setSubjectID(String uID) {
+        this.subjectID = uID;
+    }
+
+    public String getResouceID() {
+        return resouceID;
+    }
+
+    public void setResouceID(String resouceID) {
+        this.resouceID = resouceID;
+    }
+
     private String requestID;
-    private String uid;
+    private String subjectID;
     private String operation;
+    private String resouceID;
 
-    public String getResouceid() {
-        return resouceid;
-    }
 
-    public void setResouceid(String resouceid) {
-        this.resouceid = resouceid;
-    }
 
-    private String resouceid;
+
     private HashMap<String,String> contextInfo;
 }

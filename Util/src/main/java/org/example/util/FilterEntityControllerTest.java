@@ -11,7 +11,7 @@ public class FilterEntityControllerTest {
 
     public static List<FilterEntityDTO> testGetAllFilters(WebClient webClient) {
         List<FilterEntityDTO> response = webClient.get()
-                .uri("")
+                .uri("/filters")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToFlux(FilterEntityDTO.class)
@@ -24,7 +24,7 @@ public class FilterEntityControllerTest {
     // 測試 GET 請求，根據 ID 獲取單個 FilterEntityDTO
     public static FilterEntityDTO testGetFilterById(WebClient webClient,Long id) {
         FilterEntityDTO response = webClient.get()
-                .uri("/{id}", id)
+                .uri("/filters/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(FilterEntityDTO.class)
@@ -36,7 +36,7 @@ public class FilterEntityControllerTest {
     // 測試 POST 請求，創建新的 FilterEntityDTO
     public static FilterEntityDTO testCreateFilter(WebClient webClient, FilterEntityDTO filterDTO) {
         FilterEntityDTO response = webClient.post()
-                .uri("")
+                .uri("/filters")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(filterDTO), FilterEntityDTO.class)
                 .retrieve()
@@ -49,7 +49,7 @@ public class FilterEntityControllerTest {
     // 測試 PUT 請求，更新 FilterEntityDTO
     public static FilterEntityDTO testUpdateFilter(WebClient webClient, FilterEntityDTO filterDTO) {
         FilterEntityDTO response = webClient.put()
-                .uri("/{id}", filterDTO.getId())
+                .uri("/filters/{id}", filterDTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(filterDTO), FilterEntityDTO.class)
                 .retrieve()
@@ -62,7 +62,7 @@ public class FilterEntityControllerTest {
     // 測試 DELETE 請求，刪除 FilterEntity
     public static void testDeleteFilter(WebClient webClient, Long id) {
         webClient.delete()
-                .uri("/{id}", id)
+                .uri("/filters/{id}", id)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();

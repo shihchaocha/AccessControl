@@ -1,6 +1,8 @@
 package org.example.pap.models;
 
 
+import org.example.models.MatchingData;
+
 import java.util.HashMap;
 
 public class TestMatchingCriteria {
@@ -14,8 +16,8 @@ public class TestMatchingCriteria {
             MatchingCriteria criteria2 = MatchingCriteriaParser.parse(criteria.toString());
             System.out.println(criteria2.toString());
 
-            criteria.processMatchingCriteria(map);
-            MatchingData.dump(map);
+            //criteprocessMatchingCriteria(map);
+            //MatchingData.dump(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
